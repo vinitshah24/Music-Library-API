@@ -1,3 +1,6 @@
+from playlist.models import Playlist
+from album.models import Album
+from song.models import Song
 import os
 import json
 from django.core import serializers
@@ -43,8 +46,6 @@ print(artist_details)
 
 # -----------------------------------------------------------
 
-from song.models import Song
-
 
 # Create song
 artist_for_song = Artist.objects.filter(id=2)
@@ -58,14 +59,11 @@ delSongArtist = Artist.objects.filter(id=2).first().delete()
 print(delSongArtist)
 
 
-
 # Clean Console
-import os
 os.system('cls')
 
 # -----------------------------------------------------------
 
-from album.models import Album
 
 # GET all albums
 album_list = Album.objects.all()
@@ -86,7 +84,6 @@ Album.objects.create(name="TestMe", song=newSong)
 
 # -----------------------------------------------------------
 
-from playlist.models import Playlist
 
 # Get all playlists
 playlists = Playlist.objects.all()
@@ -100,3 +97,15 @@ addSong = Song.objects.filter(id=2).get()
 newPlaylist = Playlist.objects.create(name="UKHits")
 newlyCreatedPlaylist = Playlist.objects.filter(id=2).get()
 newlyCreatedPlaylist.song.add(addSong)
+
+# -----------------------------------------------------------
+
+# Check if the song is owned by the user
+findsong = Song.objects.filter(id=3)
+print(findsong)
+
+json_ser = serializers.serialize('json', findsong)
+data = json.loads(json_ser)
+print(type(data[0]['fields']['artist']))
+print("Song Owner ID: " + str(data[0]['fields']['artist']))
+

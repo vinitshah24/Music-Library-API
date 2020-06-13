@@ -28,12 +28,13 @@ class IsOwnerOrReadOnly(permissions.BasePermission):
         print("IsOwnerOrReadOnly " + str(request.user))
         if request.method in permissions.SAFE_METHODS:
             return True
-        # Instance must have an attribute named `owner`.
-        return obj.owner == request.user
+        # Instance must have an attribute named `artist`.
+        return obj.artist == request.user
 
 
 class IsAdminUser(permissions.BasePermission):
     message = 'Superuser Privilege Required!'
+
     def has_permission(self, request, view):
         print("IsAdminUser " + str(request.user))
         return request.user and request.user.is_superuser

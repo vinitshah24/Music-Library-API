@@ -18,4 +18,5 @@ class PlaylistAdmin(admin.ModelAdmin):
     def get_songs(self, obj):
         return "\n".join([s.name for s in obj.song.all()])
 
+
 admin.site.register(PlaylistModel, PlaylistAdmin)

@@ -46,8 +46,7 @@ class ArtistManager(BaseUserManager):
 
 
 class Artist(AbstractBaseUser):
-    email = models.EmailField(verbose_name="email",
-                              max_length=100, unique=True)
+    email = models.EmailField(verbose_name="email", max_length=100, unique=True)
     username = models.CharField(verbose_name="username", max_length=100, unique=True)
     born_date = models.DateField(verbose_name="born date")
     origin = models.CharField(max_length=100)

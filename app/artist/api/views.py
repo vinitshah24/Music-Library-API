@@ -4,6 +4,7 @@ import json
 from django.shortcuts import get_object_or_404
 from django.contrib.auth import authenticate, get_user_model
 from django.db.models import Q
+from rest_framework import status
 
 from rest_framework import generics, mixins
 from rest_framework.views import APIView
@@ -57,7 +58,10 @@ class LoginView(APIView):
                     token, artist, request=request
                 )
                 return Response(response)
-        return Response({"detail": "Invalid credentials"}, status=401)
+        return Response(
+            {"detail": "Invalid credentials"},
+            status=status.HTTP_401_UNAUTHORIZED
+        )
 
 
 class ArtistRegisterView(generics.CreateAPIView):
@@ -70,7 +74,7 @@ class ArtistRegisterView(generics.CreateAPIView):
 
 class ArtistsDetailView(UpdateModelMixin, generics.DestroyAPIView):
 
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsOwnerOrReadOnly]
     serializer_class = ArtistSerializer
     queryset = Artist.objects.all()
     lookup_field = 'id'
@@ -118,4 +122,3 @@ class ArtistsAdminDetailView(generics.UpdateAPIView, generics.DestroyAPIView,
     # Update partial fields instead of whole object
     def put(self, request, *args, **kwargs):
         return self.partial_update(request, *args, **kwargs)
-    

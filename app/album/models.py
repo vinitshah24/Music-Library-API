@@ -7,8 +7,8 @@ from song.models import Song as SongModel
 
 
 class Album(models.Model):
-    name = models.CharField(max_length=100)
-    song = models.ForeignKey(SongModel, on_delete=models.CASCADE)
+    name = models.CharField(max_length=100, unique=True)
+    song = models.ManyToManyField(SongModel)
 
     # def get_songs(self):
     #     print(self)
