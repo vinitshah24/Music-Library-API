@@ -1,6 +1,9 @@
 from rest_framework import serializers
 
-from artist.models import Artist as ArtistModel
+from django.contrib.auth import get_user_model
+
+
+Artist = get_user_model()
 
 
 class ArtistSerializer(serializers.ModelSerializer):
@@ -9,7 +12,7 @@ class ArtistSerializer(serializers.ModelSerializer):
     password = serializers.CharField(style={'input_type': 'password'})
 
     class Meta:
-        model = ArtistModel
+        model = Artist
         fields = [
             'email', 'password', 'username', 'born_date',
             'origin', 'genre'
@@ -17,7 +20,7 @@ class ArtistSerializer(serializers.ModelSerializer):
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
-        artist = ArtistModel(
+        artist = Artist(
             email=validated_data['email'],
             username=validated_data['username'],
             born_date=validated_data['born_date'],
@@ -39,6 +42,13 @@ class ArtistSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 
+
+class ArtistListSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Artist
+        fields = ['username', 'born_date', 'origin', 'genre']
+
     def get_fields(self, *args, **kwargs):
         fields = super().get_fields(*args, **kwargs)
         request = self.context.get('request')
@@ -51,13 +61,19 @@ class ArtistSerializer(serializers.ModelSerializer):
         return fields
 
 
+class ArtistDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Artist
+        fields = ['username', 'born_date', 'origin', 'genre']
+
+
 class ArtistAdminSerializer(serializers.ModelSerializer):
 
     # Extra kwargs - Password is Extra field
     password = serializers.CharField(style={'input_type': 'password'})
 
     class Meta:
-        model = ArtistModel
+        model = Artist
         fields = [
             'email', 'password', 'username', 'born_date',
             'origin', 'genre', 'is_admin',
@@ -66,7 +82,7 @@ class ArtistAdminSerializer(serializers.ModelSerializer):
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
-        artist = ArtistModel(
+        artist = Artist(
             email=validated_data['email'],
             username=validated_data['username'],
             born_date=validated_data['born_date'],
@@ -89,7 +105,8 @@ class ArtistAdminSerializer(serializers.ModelSerializer):
         instance.genre = validated_data.get('genre', instance.genre)
         instance.is_admin = validated_data.get('is_admin', instance.is_admin)
         instance.is_staff = validated_data.get('is_staff', instance.is_staff)
-        instance.is_superuser = validated_data.get('is_superuser', instance.is_superuser)
+        instance.is_superuser = validated_data.get(
+            'is_superuser', instance.is_superuser)
         instance.set_password(validated_data.get('password', instance.genre))
         instance.save()
         return instance
